@@ -182,39 +182,8 @@
       <div class="header-buttons">
         <button onclick="logout()" class="register-btn">Logout</button>
       </div>
-      
-      <!-- Mobile Menu Toggle -->
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-        <i class="fas fa-bars"></i>
-      </button>
     </div>
   </header>
-
-  <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
-
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobile-menu">
-    <div class="mobile-menu-header">
-      <div class="logo">
-        EduLearn <span style="font-size: 14px; opacity: 0.8;">Admin</span>
-      </div>
-      <button class="mobile-menu-close" id="mobile-menu-close">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="mobile-menu-content">
-      <ul class="mobile-menu-nav">
-        <li><a href="/">Home</a></li>
-        <li><a href="/admin/dashboard">Dashboard</a></li>
-        <li><a href="/admin/create-teacher" class="active">Create Teacher</a></li>
-        <li><a href="/courses">View Courses</a></li>
-      </ul>
-      <div class="mobile-menu-buttons">
-        <button onclick="logout()" class="btn-primary">Logout</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Breadcrumbs -->
   <div class="breadcrumbs">
@@ -319,34 +288,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', async function() {
-      // Mobile menu functionality
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const mobileMenu = document.getElementById('mobile-menu');
-      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-      const mobileMenuClose = document.getElementById('mobile-menu-close');
-
-      function openMobileMenu() {
-        mobileMenu.classList.add('active');
-        mobileMenuOverlay.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeMobileMenu() {
-        mobileMenu.classList.remove('active');
-        mobileMenuOverlay.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-
-      mobileMenuToggle.addEventListener('click', openMobileMenu);
-      mobileMenuClose.addEventListener('click', closeMobileMenu);
-      mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-
-      // Close mobile menu when clicking on a link
-      const mobileMenuLinks = document.querySelectorAll('.mobile-menu-nav a');
-      mobileMenuLinks.forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
-      });
-      
       const form = document.getElementById('create-teacher-form');
       const errorElement = document.getElementById('create-teacher-error');
       const successElement = document.getElementById('create-teacher-success');

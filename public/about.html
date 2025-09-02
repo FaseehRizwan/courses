@@ -40,42 +40,12 @@
           <li><a href="/contact">Contact</a></li>
         </ul>
       </nav>
-      <div class="header-buttons desktop-only" id="auth-buttons">
+      <div class="header-buttons" id="auth-buttons">
         <a href="/login" class="login-btn">Login</a>
         <a href="/register" class="register-btn">Register</a>
       </div>
-      
-      <!-- Mobile Menu Toggle -->
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-        <i class="fas fa-bars"></i>
-      </button>
     </div>
   </header>
-
-  <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
-
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobile-menu">
-    <div class="mobile-menu-header">
-      <div class="logo">EduLearn</div>
-      <button class="mobile-menu-close" id="mobile-menu-close">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="mobile-menu-content">
-      <ul class="mobile-menu-nav">
-        <li><a href="/">Home</a></li>
-        <li><a href="/about" class="active">About</a></li>
-        <li><a href="/courses">Courses</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
-      <div class="mobile-menu-buttons" id="mobile-auth-buttons">
-        <a href="/login" class="login-btn">Login</a>
-        <a href="/register" class="register-btn">Register</a>
-      </div>
-    </div>
-  </div>
 
   <!-- Breadcrumbs -->
   <div class="breadcrumbs">
@@ -269,48 +239,18 @@
   </footer>
 
   <script>
+    // Update auth buttons based on login state
     document.addEventListener('DOMContentLoaded', async function() {
-      // Mobile menu functionality
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const mobileMenu = document.getElementById('mobile-menu');
-      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-      const mobileMenuClose = document.getElementById('mobile-menu-close');
-
-      function openMobileMenu() {
-        mobileMenu.classList.add('active');
-        mobileMenuOverlay.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeMobileMenu() {
-        mobileMenu.classList.remove('active');
-        mobileMenuOverlay.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-
-      mobileMenuToggle.addEventListener('click', openMobileMenu);
-      mobileMenuClose.addEventListener('click', closeMobileMenu);
-      mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-
-      const mobileMenuLinks = document.querySelectorAll('.mobile-menu-nav a');
-      mobileMenuLinks.forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
-      });
-
-      // Update auth buttons based on login state
       try {
         const response = await fetch('/api/me');
         const data = await response.json();
-        const desktopAuthButtons = document.getElementById('auth-buttons');
-        const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+        const authButtonsContainer = document.getElementById('auth-buttons');
         
         if (data.user) {
-          const authContent = `
+          authButtonsContainer.innerHTML = `
             <a href="/dashboard" class="login-btn">Dashboard</a>
             <button onclick="logout()" class="register-btn">Logout</button>
           `;
-          desktopAuthButtons.innerHTML = authContent;
-          mobileAuthButtons.innerHTML = authContent;
         }
       } catch (error) {
         console.error('Failed to check auth state:', error);

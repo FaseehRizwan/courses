@@ -261,61 +261,8 @@
     </div>
   </footer>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobile-menu">
-    <div class="mobile-menu-content">
-      <div class="mobile-menu-header">
-        <a href="/" class="logo-mobile">
-          <img src="/assets/logo.png" alt="EduLearn" id="placeholder-logo-mobile">
-          EduLearn
-        </a>
-        <button class="close-btn" id="mobile-menu-close">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <nav class="mobile-menu-nav">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/admin/dashboard" class="active">Dashboard</a></li>
-          <li><a href="/admin/create-teacher">Create Teacher</a></li>
-          <li><a href="/courses">View Courses</a></li>
-        </ul>
-      </nav>
-    </div>
-    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
-  </div>
-
   <script>
     document.addEventListener('DOMContentLoaded', async function() {
-      // Mobile menu functionality
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const mobileMenu = document.getElementById('mobile-menu');
-      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-      const mobileMenuClose = document.getElementById('mobile-menu-close');
-
-      function openMobileMenu() {
-        mobileMenu.classList.add('active');
-        mobileMenuOverlay.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeMobileMenu() {
-        mobileMenu.classList.remove('active');
-        mobileMenuOverlay.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-
-      if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', openMobileMenu);
-        mobileMenuClose.addEventListener('click', closeMobileMenu);
-        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-
-        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-nav a');
-        mobileMenuLinks.forEach(link => {
-          link.addEventListener('click', closeMobileMenu);
-        });
-      }
-
       try {
         // Load real dashboard stats
         const statsResponse = await api('/api/admin/stats', { method: 'GET' });
@@ -410,6 +357,28 @@
       
       document.getElementById('clear-cache').addEventListener('click', function() {
         alert('Cache clearing feature not implemented yet.');
+      });
+    });
+  </script>
+</body>
+</html>
+        `;
+      }, 500);
+      
+      // Check if logo exists, otherwise use a generic one
+      const logo = document.getElementById('placeholder-logo');
+      logo.onerror = function() {
+        // If logo fails to load, use text instead
+        logo.style.display = 'none';
+      };
+      
+      // Set up action buttons
+      document.getElementById('run-backup').addEventListener('click', function() {
+        alert('Database backup initiated. You will be notified when complete.');
+      });
+      
+      document.getElementById('clear-cache').addEventListener('click', function() {
+        alert('Cache cleared successfully!');
       });
     });
   </script>

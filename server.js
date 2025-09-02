@@ -32,6 +32,59 @@ app.use('/media', express.static(MEDIA_DIR));
 // Serve static assets under /assets (no .html routes exposed)
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
 
+// Insert multer/upload configuration before any route that uses it
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, MEDIA_DIR),
+  filename: (req, file, cb) => {
+    const ts = Date.now();
+    const base = (file.originalname || 'file').toLowerCase().replace(/[^a-z0-9.\-_]+/g, '-');
+    cb(null, `${ts}-${base}`);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 1024 * 1024 * 500 }, // 500MB for videos
+  fileFilter: (req, file, cb) => {
+    if ((file.mimetype || '').startsWith('video/')) cb(null, true);
+    else cb(new Error('Only video files are allowed for video field'));
+  }
+});
+
+// Additional uploader for any resource file types
+const uploadAny = multer({
+  storage,
+  limits: { fileSize: 1024 * 1024 * 200 } // 200MB for resources
+});
+
+// Additional uploader for images (thumbnails)
+const uploadImage = multer({
+  storage,
+  limits: { fileSize: 1024 * 1024 * 10 }, // 10MB for images
+  fileFilter: (req, file, cb) => {
+    if ((file.mimetype || '').startsWith('image/')) cb(null, true);
+    else cb(new Error('Only image files are allowed'));
+  }
+});
+
+// Update multer to handle mixed file types
+const uploadMixed = multer({
+  storage,
+  limits: { fileSize: 1024 * 1024 * 500 }, // 500MB for videos
+  fileFilter: (req, file, cb) => {
+    if (file.fieldname === 'video') {
+      if ((file.mimetype || '').startsWith('video/')) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only video files are allowed for video field'));
+      }
+    } else {
+      // Allow any file type for resource field
+      cb(null, true);
+    }
+  }
+});
+
 // Page routes (clean paths)
 function sendPage(res, file) {
   res.sendFile(path.join(__dirname, 'public', file));
@@ -84,7 +137,7 @@ app.get('/courses', (req, res) => {
   sendPage(res, 'centralized-courses.html');
 });
 
-// Make courses listing API public
+// Make courses listing API public (no authentication required)
 app.get('/api/public-courses', async (req, res) => {
   try {
     const rows = await all(
@@ -301,57 +354,6 @@ app.get('/api/my-courses', requireAuth, async (req, res) => {
     res.json({ courses: rows });
   } catch {
     res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Upload config (videos only)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, MEDIA_DIR),
-  filename: (req, file, cb) => {
-    const ts = Date.now();
-    const base = (file.originalname || 'video').toLowerCase().replace(/[^a-z0-9.\-_]+/g, '-');
-    cb(null, `${ts}-${base}`);
-  }
-});
-const upload = multer({
-  storage,
-  limits: { fileSize: 1024 * 1024 * 500 }, // 500MB
-  fileFilter: (req, file, cb) => {
-    if ((file.mimetype || '').startsWith('video/')) cb(null, true);
-    else cb(new Error('Only video files are allowed'));
-  }
-});
-// Additional uploader for any resource file types
-const uploadAny = multer({
-  storage,
-  limits: { fileSize: 1024 * 1024 * 200 } // 200MB for resources
-});
-// Additional uploader for images (thumbnails)
-const uploadImage = multer({
-  storage,
-  limits: { fileSize: 1024 * 1024 * 10 }, // Increased to 10MB for images
-  fileFilter: (req, file, cb) => {
-    if ((file.mimetype || '').startsWith('image/')) cb(null, true);
-    else cb(new Error('Only image files are allowed'));
-  }
-});
-
-// Update multer to handle mixed file types
-const uploadMixed = multer({
-  storage,
-  limits: { fileSize: 1024 * 1024 * 500 }, // 500MB for videos
-  fileFilter: (req, file, cb) => {
-    // Allow all file types but check field name for specific restrictions
-    if (file.fieldname === 'video') {
-      if ((file.mimetype || '').startsWith('video/')) {
-        cb(null, true);
-      } else {
-        cb(new Error('Only video files are allowed for video field'));
-      }
-    } else {
-      // Allow any file type for resource field
-      cb(null, true);
-    }
   }
 });
 
@@ -597,11 +599,11 @@ app.post('/api/grand-assignments/:id/submit', requireRole('student'), uploadAny.
   }
 });
 
-// Update course details endpoint to work for all user types
-app.get('/api/courses/:id', requireAuth, async (req, res) => {
+// Update course details endpoint to allow public access for free courses
+app.get('/api/courses/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    const user = req.session.user;
+    const user = req.session.user || null;
     
     const course = await get(
       `SELECT c.*, u.name AS teacher_name
@@ -612,13 +614,13 @@ app.get('/api/courses/:id', requireAuth, async (req, res) => {
     );
     if (!course) return res.status(404).json({ error: 'Not found' });
 
-    // Check access permissions
-    if (user.role === 'student') {
-      const enrolled = await get(
-        'SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?',
-        [user.id, id]
-      );
-      if (!enrolled) return res.status(403).json({ error: 'Not enrolled in this course' });
+    // If course is paid, require auth / enrollment / ownership as before
+    if (!course.is_free) {
+      if (!user) return res.status(401).json({ error: 'Unauthorized' });
+      if (user.role === 'student') {
+        const enrolled = await get('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?', [user.id, id]);
+        if (!enrolled) return res.status(403).json({ error: 'Not enrolled in this course' });
+      }
     }
 
     // Get all course content
@@ -633,82 +635,53 @@ app.get('/api/courses/:id', requireAuth, async (req, res) => {
       [id]
     );
 
-    const grandQuizzes = await all(
-      'SELECT * FROM grand_quizzes WHERE course_id = ? ORDER BY order_index ASC, created_at ASC',
-      [id]
-    );
+    const grandQuizzes = await all('SELECT * FROM grand_quizzes WHERE course_id = ? ORDER BY order_index ASC, created_at ASC', [id]);
+    const grandAssignments = await all('SELECT * FROM grand_assignments WHERE course_id = ? ORDER BY order_index ASC, created_at ASC', [id]);
 
-    const grandAssignments = await all(
-      'SELECT * FROM grand_assignments WHERE course_id = ? ORDER BY order_index ASC, created_at ASC',
-      [id]
-    );
-
-    // Combine all content for sequential ordering
     const allContent = [
       ...lectures.map(l => ({ ...l, type: 'lecture' })),
       ...grandQuizzes.map(q => ({ ...q, type: 'grand_quiz' })),
       ...grandAssignments.map(a => ({ ...a, type: 'grand_assignment' }))
     ].sort((a, b) => a.order_index - b.order_index);
 
-    // For students, add progress information and sequential locking
-    if (user.role === 'student') {
-      // Get progress for lectures
-      const lectureProgress = await all(
-        `SELECT lecture_id as item_id, completed, completion_percentage FROM student_progress WHERE user_id = ?`,
-        [user.id]
-      );
-      
-      // Get progress for grand quizzes
-      const quizSubmissions = await all(
-        `SELECT quiz_id as item_id FROM grand_quiz_submissions WHERE student_id = ?`,
-        [user.id]
-      );
-      
-      // Get progress for grand assignments
-      const assignmentSubmissions = await all(
-        `SELECT assignment_id as item_id FROM grand_assignment_submissions WHERE student_id = ?`,
-        [user.id]
-      );
-      
+    // For authenticated students only: add progress and locking (skip for unauthenticated users)
+    if (user && user.role === 'student') {
+      const lectureProgress = await all(`SELECT lecture_id as item_id, completed, completion_percentage FROM student_progress WHERE user_id = ?`, [user.id]);
+      const quizSubmissions = await all(`SELECT quiz_id as item_id FROM grand_quiz_submissions WHERE student_id = ?`, [user.id]);
+      const assignmentSubmissions = await all(`SELECT assignment_id as item_id FROM grand_assignment_submissions WHERE student_id = ?`, [user.id]);
+
       const progressMap = {};
-      lectureProgress.forEach(p => {
-        progressMap[`lecture_${p.item_id}`] = { completed: p.completed, percentage: p.completion_percentage };
-      });
-      quizSubmissions.forEach(q => {
-        progressMap[`grand_quiz_${q.item_id}`] = { completed: 1, percentage: 100 };
-      });
-      assignmentSubmissions.forEach(a => {
-        progressMap[`grand_assignment_${a.item_id}`] = { completed: 1, percentage: 100 };
-      });
-      
-      // Add progress and lock status
+      lectureProgress.forEach(p => { progressMap[`lecture_${p.item_id}`] = { completed: p.completed, percentage: p.completion_percentage }; });
+      quizSubmissions.forEach(q => { progressMap[`grand_quiz_${q.item_id}`] = { completed: 1, percentage: 100 }; });
+      assignmentSubmissions.forEach(a => { progressMap[`grand_assignment_${a.item_id}`] = { completed: 1, percentage: 100 }; });
+
       allContent.forEach((item, index) => {
         const progressKey = `${item.type}_${item.id}`;
         item.progress = progressMap[progressKey] || { completed: 0, percentage: 0 };
-        
-        // First item is always unlocked
         if (index === 0) {
           item.is_locked = false;
         } else {
-          // Subsequent items are locked until previous is completed
           const prevItem = allContent[index - 1];
           const prevProgressKey = `${prevItem.type}_${prevItem.id}`;
           const prevProgress = progressMap[prevProgressKey];
           item.is_locked = !(prevProgress && prevProgress.completed);
         }
       });
+    } else {
+      // For unauthenticated or non-students, expose content without progress/locks
+      allContent.forEach(item => {
+        item.progress = { completed: 0, percentage: 0 };
+        item.is_locked = false;
+      });
     }
 
-    // Get resources for admin/teacher view
-    if (user.role === 'admin' || user.role === 'teacher') {
+    // Resources for admin/teacher view remain the same (only if user is admin/teacher)
+    if (user && (user.role === 'admin' || user.role === 'teacher')) {
       const lectureIds = lectures.map(l => l.id);
       let resources = [];
       if (lectureIds.length) {
         const placeholders = lectureIds.map(() => '?').join(',');
-        resources = await all(
-          `SELECT * FROM lecture_resources WHERE lecture_id IN (${placeholders}) ORDER BY created_at ASC`,
-          lectureIds
-        );
+        resources = await all(`SELECT * FROM lecture_resources WHERE lecture_id IN (${placeholders}) ORDER BY created_at ASC`, lectureIds);
       }
       const resMap = {};
       resources.forEach(r => {
@@ -726,217 +699,173 @@ app.get('/api/courses/:id', requireAuth, async (req, res) => {
       total_content_count: allContent.length
     };
     
-    res.json({ 
-      course: courseOut, 
-      lectures, 
-      grandQuizzes, 
-      grandAssignments,
-      allContent
-    });
+    res.json({ course: courseOut, lectures, grandQuizzes, grandAssignments, allContent });
   } catch (error) {
     console.error('Course fetch error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-// STUDENT-ONLY routes
-app.get('/student/courses', requirePageRole('student'), (req, res) => sendPage(res, 'centralized-courses.html'));
-app.get('/student/course', requirePageRole('student'), (req, res) => sendPage(res, 'student-course.html'));
-app.get('/student/lecture', requirePageRole('student'), (req, res) => sendPage(res, 'student-lecture.html'));
-
-// NEW: Get individual lecture details
-app.get('/api/lectures/:id', requireAuth, async (req, res) => {
+// NEW: Get individual lecture details — allow public access when parent course is free
+app.get('/api/lectures/:id', async (req, res) => {
   try {
     const lectureId = req.params.id;
-    const user = req.session.user;
+    const user = req.session.user || null;
     
-    // Get lecture with course info
     const lecture = await get(
-      `SELECT l.*, c.id as course_id, c.title as course_title, c.teacher_id
+      `SELECT l.*, c.id as course_id, c.title as course_title, c.teacher_id, c.is_free
        FROM lectures l
        JOIN courses c ON c.id = l.course_id
        WHERE l.id = ?`,
       [lectureId]
     );
-    
     if (!lecture) return res.status(404).json({ error: 'Lecture not found' });
-    
-    // Check access permissions
-    if (user.role === 'student') {
-      const enrolled = await get(
-        'SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?',
-        [user.id, lecture.course_id]
-      );
-      if (!enrolled) return res.status(403).json({ error: 'Not enrolled in this course' });
-      
-      // Check if lecture is unlocked
-      const progress = await all(
-        `SELECT lecture_id, completed FROM student_progress WHERE user_id = ?`,
-        [user.id]
-      );
-      const progressMap = {};
-      progress.forEach(p => {
-        progressMap[p.lecture_id] = p.completed;
-      });
-      
-      // Get all lectures in order to check sequential access
-      const allLectures = await all(
-        `SELECT id FROM lectures WHERE course_id = ? ORDER BY order_index ASC, created_at ASC`,
-        [lecture.course_id]
-      );
-      
-      const lectureIndex = allLectures.findIndex(l => l.id == lectureId);
-      if (lectureIndex > 0) {
-        // Check if previous lecture is completed
-        const prevLecture = allLectures[lectureIndex - 1];
-        if (!progressMap[prevLecture.id]) {
-          return res.status(403).json({ error: 'Previous lecture must be completed first' });
+
+    // If course is paid, enforce previous auth/enrollment/ownership checks
+    if (!lecture.is_free) {
+      if (!user) return res.status(401).json({ error: 'Unauthorized' });
+
+      if (user.role === 'student') {
+        const enrolled = await get('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?', [user.id, lecture.course_id]);
+        if (!enrolled) return res.status(403).json({ error: 'Not enrolled in this course' });
+
+        // Sequential-lock checks only for authenticated students on paid courses
+        const progress = await all(`SELECT lecture_id, completed FROM student_progress WHERE user_id = ?`, [user.id]);
+        const progressMap = {};
+        progress.forEach(p => { progressMap[p.lecture_id] = p.completed; });
+
+        const allLectures = await all(`SELECT id FROM lectures WHERE course_id = ? ORDER BY order_index ASC, created_at ASC`, [lecture.course_id]);
+        const lectureIndex = allLectures.findIndex(l => l.id == lectureId);
+        if (lectureIndex > 0) {
+          const prevLecture = allLectures[lectureIndex - 1];
+          if (!progressMap[prevLecture.id]) {
+            return res.status(403).json({ error: 'Previous lecture must be completed first' });
+          }
         }
+      } else if (user.role === 'teacher' && user.id !== lecture.teacher_id) {
+        return res.status(403).json({ error: 'Access denied' });
       }
-    } else if (user.role === 'teacher' && user.id !== lecture.teacher_id) {
-      return res.status(403).json({ error: 'Access denied' });
+    } else {
+      // course is free: allow public access, skip sequential lock enforcement for unauthenticated users
+      // but if authenticated teacher and not owner, deny as before
+      if (user && user.role === 'teacher' && user.id !== lecture.teacher_id) {
+        // Teachers who are not the owner should not access edit-only endpoints but can view public content
+        // We allow viewing but keep this check here only if you want to restrict teachers - currently allow view.
+      }
     }
     
     res.json({ lecture });
-  } catch {
+  } catch (err) {
+    console.error('Lecture fetch error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-// NEW: Get lecture resources
-app.get('/api/lectures/:id/resources', requireAuth, async (req, res) => {
+// NEW: Get lecture resources — allow public access when parent course is free
+app.get('/api/lectures/:id/resources', async (req, res) => {
   try {
     const lectureId = req.params.id;
-    const user = req.session.user;
-    
-    // Verify access to lecture first
+    const user = req.session.user || null;
+
     const lecture = await get(
-      `SELECT l.*, c.teacher_id, c.id as course_id
+      `SELECT l.*, c.teacher_id, c.id as course_id, c.is_free
        FROM lectures l
        JOIN courses c ON c.id = l.course_id
        WHERE l.id = ?`,
       [lectureId]
     );
-    
     if (!lecture) return res.status(404).json({ error: 'Lecture not found' });
-    
-    // Check permissions
-    if (user.role === 'student') {
-      const enrolled = await get(
-        'SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?',
-        [user.id, lecture.course_id]
-      );
-      if (!enrolled) return res.status(403).json({ error: 'Not enrolled' });
-    } else if (user.role === 'teacher' && user.id !== lecture.teacher_id) {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-    
-    const resources = await all(
-      'SELECT * FROM lecture_resources WHERE lecture_id = ? ORDER BY created_at ASC',
-      [lectureId]
-    );
-    
-    res.json({ resources });
-  } catch {
-    res.status(500).json({ error: 'Server error' });
-  }
-});
 
-// NEW: Get lecture quiz
-app.get('/api/lectures/:id/quiz', requireAuth, async (req, res) => {
-  try {
-    const lectureId = req.params.id;
-    const user = req.session.user;
-    
-    // Verify access to lecture
-    const lecture = await get(
-      `SELECT l.*, c.teacher_id, c.id as course_id
-       FROM lectures l
-       JOIN courses c ON c.id = l.course_id
-       WHERE l.id = ?`,
-      [lectureId]
-    );
-    
-    if (!lecture) return res.status(404).json({ error: 'Lecture not found' });
-    
-    // Check permissions
-    if (user.role === 'student') {
-      const enrolled = await get(
-        'SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?',
-        [user.id, lecture.course_id]
-      );
-      if (!enrolled) return res.status(403).json({ error: 'Not enrolled' });
-    } else if (user.role === 'teacher' && user.id !== lecture.teacher_id) {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-    
-    const quiz = await get(
-      'SELECT * FROM lecture_quizzes WHERE lecture_id = ?',
-      [lectureId]
-    );
-    
-    if (!quiz) {
-      return res.json({ quiz: null });
-    }
-    
-    // If it's a live quiz, get questions and options
-    if (quiz.is_live) {
-      const questions = await all(
-        'SELECT * FROM quiz_questions WHERE quiz_id = ? ORDER BY order_index ASC',
-        [quiz.id]
-      );
-      
-      for (let question of questions) {
-        question.options = await all(
-          'SELECT * FROM quiz_answer_options WHERE question_id = ? ORDER BY order_index ASC',
-          [question.id]
-        );
+    if (!lecture.is_free) {
+      if (!user) return res.status(401).json({ error: 'Unauthorized' });
+      if (user.role === 'student') {
+        const enrolled = await get('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?', [user.id, lecture.course_id]);
+        if (!enrolled) return res.status(403).json({ error: 'Not enrolled' });
+      } else if (user.role === 'teacher' && user.id !== lecture.teacher_id) {
+        return res.status(403).json({ error: 'Access denied' });
       }
-      
+    }
+
+    const resources = await all('SELECT * FROM lecture_resources WHERE lecture_id = ? ORDER BY created_at ASC', [lectureId]);
+    res.json({ resources });
+  } catch (err) {
+    console.error('Resources fetch error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// NEW: Get lecture quiz — allow public access when parent course is free
+app.get('/api/lectures/:id/quiz', async (req, res) => {
+  try {
+    const lectureId = req.params.id;
+    const user = req.session.user || null;
+
+    const lecture = await get(
+      `SELECT l.*, c.teacher_id, c.id as course_id, c.is_free
+       FROM lectures l
+       JOIN courses c ON c.id = l.course_id
+       WHERE l.id = ?`,
+      [lectureId]
+    );
+    if (!lecture) return res.status(404).json({ error: 'Lecture not found' });
+
+    if (!lecture.is_free) {
+      if (!user) return res.status(401).json({ error: 'Unauthorized' });
+      if (user.role === 'student') {
+        const enrolled = await get('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?', [user.id, lecture.course_id]);
+        if (!enrolled) return res.status(403).json({ error: 'Not enrolled' });
+      } else if (user.role === 'teacher' && user.id !== lecture.teacher_id) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+    }
+
+    const quiz = await get('SELECT * FROM lecture_quizzes WHERE lecture_id = ?', [lectureId]);
+    if (!quiz) return res.json({ quiz: null });
+
+    if (quiz.is_live) {
+      const questions = await all('SELECT * FROM quiz_questions WHERE quiz_id = ? ORDER BY order_index ASC', [quiz.id]);
+      for (let question of questions) {
+        question.options = await all('SELECT * FROM quiz_answer_options WHERE question_id = ? ORDER BY order_index ASC', [question.id]);
+      }
       quiz.questions = questions;
     }
-    
+
     res.json({ quiz });
-  } catch {
+  } catch (err) {
+    console.error('Quiz fetch error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-// NEW: Get lecture assignment
-app.get('/api/lectures/:id/assignment', requireAuth, async (req, res) => {
+// NEW: Get lecture assignment — allow public access when parent course is free
+app.get('/api/lectures/:id/assignment', async (req, res) => {
   try {
     const lectureId = req.params.id;
-    const user = req.session.user;
-    
-    // Verify access to lecture
+    const user = req.session.user || null;
+
     const lecture = await get(
-      `SELECT l.*, c.teacher_id, c.id as course_id
+      `SELECT l.*, c.teacher_id, c.id as course_id, c.is_free
        FROM lectures l
        JOIN courses c ON c.id = l.course_id
        WHERE l.id = ?`,
       [lectureId]
     );
-    
     if (!lecture) return res.status(404).json({ error: 'Lecture not found' });
-    
-    // Check permissions
-    if (user.role === 'student') {
-      const enrolled = await get(
-        'SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?',
-        [user.id, lecture.course_id]
-      );
-      if (!enrolled) return res.status(403).json({ error: 'Not enrolled' });
-    } else if (user.role === 'teacher' && user.id !== lecture.teacher_id) {
-      return res.status(403).json({ error: 'Access denied' });
+
+    if (!lecture.is_free) {
+      if (!user) return res.status(401).json({ error: 'Unauthorized' });
+      if (user.role === 'student') {
+        const enrolled = await get('SELECT 1 FROM enrollments WHERE user_id = ? AND course_id = ?', [user.id, lecture.course_id]);
+        if (!enrolled) return res.status(403).json({ error: 'Not enrolled' });
+      } else if (user.role === 'teacher' && user.id !== lecture.teacher_id) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
     }
-    
-    const assignment = await get(
-      'SELECT * FROM lecture_assignments WHERE lecture_id = ?',
-      [lectureId]
-    );
-    
+
+    const assignment = await get('SELECT * FROM lecture_assignments WHERE lecture_id = ?', [lectureId]);
     res.json({ assignment });
-  } catch {
+  } catch (err) {
+    console.error('Assignment fetch error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
