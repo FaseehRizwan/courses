@@ -739,6 +739,11 @@ app.get('/api/courses/:id', requireAuth, async (req, res) => {
   }
 });
 
+// STUDENT-ONLY routes
+app.get('/student/courses', requirePageRole('student'), (req, res) => sendPage(res, 'centralized-courses.html'));
+app.get('/student/course', requirePageRole('student'), (req, res) => sendPage(res, 'student-course.html'));
+app.get('/student/lecture', requirePageRole('student'), (req, res) => sendPage(res, 'student-lecture.html'));
+
 // NEW: Get individual lecture details
 app.get('/api/lectures/:id', requireAuth, async (req, res) => {
   try {

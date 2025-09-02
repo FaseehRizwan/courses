@@ -40,12 +40,42 @@
           <li><a href="/contact">Contact</a></li>
         </ul>
       </nav>
-      <div class="header-buttons">
+      <div class="header-buttons desktop-only">
+        <a href="/login" class="login-btn">Login</a>
+        <a href="/register" class="register-btn">Register</a>
+      </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-header">
+      <div class="logo">EduLearn</div>
+      <button class="mobile-menu-close" id="mobile-menu-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="mobile-menu-content">
+      <ul class="mobile-menu-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/courses">Courses</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+      <div class="mobile-menu-buttons">
         <a href="/login" class="login-btn">Login</a>
         <a href="/register" class="register-btn">Register</a>
       </div>
     </div>
-  </header>
+  </div>
 
   <!-- Breadcrumbs -->
   <div class="breadcrumbs">
@@ -149,6 +179,33 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Mobile menu functionality
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+      const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+      function openMobileMenu() {
+        mobileMenu.classList.add('active');
+        mobileMenuOverlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMobileMenu() {
+        mobileMenu.classList.remove('active');
+        mobileMenuOverlay.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+      mobileMenuClose.addEventListener('click', closeMobileMenu);
+      mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+      const mobileMenuLinks = document.querySelectorAll('.mobile-menu-nav a');
+      mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+
       const registerForm = document.getElementById('registerForm');
       const errorElement = document.getElementById('register-error');
       
