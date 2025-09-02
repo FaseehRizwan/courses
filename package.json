@@ -1,0 +1,17 @@
+{
+  "name": "course-site",
+  "version": "1.0.0",
+  "description": "Online video courses site with auth and roles using Express, sqlite3, bcrypt, vanilla JS/CSS/HTML",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "sqlite3": "^5.1.7",
+    "multer": "^1.4.5-lts.1"
+  }
+}

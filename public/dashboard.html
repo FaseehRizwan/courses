@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dashboard - Course Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="/assets/style.css" rel="stylesheet" />
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+  <script defer src="/assets/dashboard.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <button id="menu-toggle" class="icon-btn hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="brand">Course Site</div>
+    <nav id="nav-links"><!-- ...existing code... --></nav>
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+  </header>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <span>Menu</span>
+      <button id="sidebar-close" class="icon-btn" aria-label="Close menu">✕</button>
+    </div>
+    <nav id="sidebar-links"></nav>
+  </aside>
+  <div id="overlay" class="overlay"></div>
+
+  <main class="container">
+    <h1>Dashboard</h1>
+    <section id="user-info" class="card">
+      <!-- filled by JS -->
+    </section>
+
+    <section id="teacher-panel" class="card hidden">
+      <h2>Create Course</h2>
+      <form id="create-course-form" class="form">
+        <label>Title
+          <input type="text" name="title" required />
+        </label>
+        <label>Description
+          <textarea name="description" rows="3"></textarea>
+        </label>
+        <label>Video URL
+          <input type="url" name="video_url" placeholder="https://..." />
+        </label>
+        <button type="submit">Publish</button>
+        <div id="create-course-error" class="error"></div>
+      </form>
+      <h3>Your Courses</h3>
+      <div id="teacher-courses"></div>
+    </section>
+
+    <section id="student-panel" class="card hidden">
+      <h2>My Enrollments</h2>
+      <div id="student-courses"></div>
+      <p class="muted">Browse <a href="/courses">All Courses</a> to enroll.</p>
+    </section>
+
+    <section id="admin-panel" class="card hidden">
+      <h2>All Courses (Admin)</h2>
+      <div id="admin-courses"></div>
+
+      <!-- NEW: Create Teacher -->
+      <h2 style="margin-top:1rem;">Create Teacher Account</h2>
+      <form id="create-teacher-form" class="form">
+        <label>Name
+          <input type="text" name="name" required />
+        </label>
+        <label>Email
+          <input type="email" name="email" required />
+        </label>
+        <label>Password
+          <input type="password" name="password" required minlength="6" />
+        </label>
+        <button type="submit">Create Teacher</button>
+        <div id="create-teacher-error" class="error"></div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

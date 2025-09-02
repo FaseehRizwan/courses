@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lecture View - EduLearn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="/assets/edulearn.css" rel="stylesheet">
+  <link href="/assets/style.css" rel="stylesheet">
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+  <style>
+    .lecture-player {
+      background: black;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      padding-bottom: 56.25%;
+      margin-bottom: 30px;
+    }
+    
+    .lecture-player iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .lecture-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    }
+    
+    .lecture-header {
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .lecture-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .lecture-actions {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-light);
+      padding-top: 20px;
+    }
+    
+    .completion-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .quiz-section, .assignment-section {
+      background: var(--bg-light);
+      padding: 25px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="top-bar">
+      <div class="top-bar-container">
+        <div class="contact-info">
+          <span><i class="far fa-envelope"></i> support@edulearn.com</span>
+          <span><i class="fas fa-phone"></i> +1234 567 890</span>
+        </div>
+        <div class="social-links">
+          <a href="#"><i class="fas fa-bell"></i></a>
+          <a href="#"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.png" alt="EduLearn" id="placeholder-logo">
+        EduLearn <span style="font-size: 16px; opacity: 0.8;">Student</span>
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/student/dashboard">Dashboard</a></li>
+          <li><a href="/courses">Browse Courses</a></li>
+          <li><a href="/student/calendar">Calendar</a></li>
+        </ul>
+      </nav>
+      <div class="header-buttons">
+        <button onclick="logout()" class="register-btn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs -->
+  <div class="breadcrumbs">
+    <div class="breadcrumbs-container">
+      <h2 class="page-title" id="lecture-title">Lecture Title</h2>
+      <ul class="breadcrumbs-list">
+        <li class="breadcrumbs-item"><a href="/">Home</a></li>
+        <li class="breadcrumbs-item"><a href="/student/dashboard">Dashboard</a></li>
+        <li class="breadcrumbs-item"><a href="#" id="breadcrumb-course">Course</a></li>
+        <li class="breadcrumbs-item active">Lecture</li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="lecture-player">
+      <iframe id="lecture-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+    </div>
+    
+    <div class="lecture-content">
+      <div class="lecture-header">
+        <h1 id="lecture-name">Introduction to HTML</h1>
+        <div class="lecture-meta">
+          <span><i class="fas fa-clock"></i> 15 minutes</span>
+          <span><i class="fas fa-user"></i> Sarah Johnson</span>
+          <span><i class="fas fa-calendar"></i> Published 2 days ago</span>
+        </div>
+      </div>
+      
+      <div class="lecture-description">
+        <h3>About This Lecture</h3>
+        <p>In this comprehensive introduction to HTML, you'll learn the fundamental building blocks of web development. We'll cover the basic structure of HTML documents, essential tags, and how to create your first web page from scratch.</p>
+        
+        <h4>What You'll Learn:</h4>
+        <ul>
+          <li>Understanding HTML syntax and structure</li>
+          <li>Essential HTML tags and elements</li>
+          <li>Creating headings, paragraphs, and lists</li>
+          <li>Building the foundation for web development</li>
+        </ul>
+      </div>
+      
+      <div class="quiz-section" id="lecture-quiz" style="display: none;">
+        <h3><i class="fas fa-question-circle"></i> Lecture Quiz</h3>
+        <p>Test your understanding of this lecture with a quick quiz.</p>
+        <button class="btn-primary">Take Quiz</button>
+      </div>
+      
+      <div class="assignment-section" id="lecture-assignment" style="display: none;">
+        <h3><i class="fas fa-tasks"></i> Assignment</h3>
+        <p>Complete the assignment to practice what you've learned.</p>
+        <button class="btn-primary">View Assignment</button>
+      </div>
+      
+      <div class="lecture-actions">
+        <div class="completion-status">
+          <input type="checkbox" id="mark-complete">
+          <label for="mark-complete">Mark as Complete</label>
+        </div>
+        <div class="navigation">
+          <button class="btn-secondary" id="prev-lecture">
+            <i class="fas fa-chevron-left"></i> Previous
+          </button>
+          <button class="btn-primary" id="next-lecture">
+            Next <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Student Portal</h3>
+          <p>EduLearn Student Portal provides easy access to your courses, assignments, quizzes, and academic resources.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/student/dashboard">Dashboard</a></li>
+            <li><a href="/courses">Browse Courses</a></li>
+            <li><a href="/student/calendar">Calendar</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Support</h3>
+          <ul class="footer-links">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Contact Support</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 EduLearn Student Portal. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Get lecture ID from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const lectureId = urlParams.get('id');
+      
+      if (!lectureId) {
+        alert('Lecture not found');
+        window.location.href = '/student/dashboard';
+        return;
+      }
+      
+      try {
+        // Load lecture data
+        const response = await api(`/api/lectures/${lectureId}`, { method: 'GET' });
+        
+        if (response.lecture) {
+          const lecture = response.lecture;
+          document.getElementById('lecture-title').textContent = lecture.title;
+          document.getElementById('lecture-name').textContent = lecture.title;
+          document.getElementById('breadcrumb-course').textContent = lecture.course_title;
+          document.getElementById('breadcrumb-course').href = `/student/course?id=${lecture.course_id}`;
+          
+          if (lecture.video_url) {
+            document.getElementById('lecture-video').src = lecture.video_url;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load lecture:', error);
+      }
+      
+      // Check if logo exists
+      const logo = document.getElementById('placeholder-logo');
+      logo.onerror = function() {
+        logo.style.display = 'none';
+      };
+      
+      // Handle completion checkbox
+      document.getElementById('mark-complete').addEventListener('change', function() {
+        if (this.checked) {
+          alert('Lecture marked as complete!');
+          // In real app, send API request to mark progress
+        }
+      });
+      
+      // Navigation buttons
+      document.getElementById('next-lecture').addEventListener('click', function() {
+        alert('Moving to next lecture...');
+      });
+      
+      document.getElementById('prev-lecture').addEventListener('click', function() {
+        alert('Moving to previous lecture...');
+      });
+    });
+  </script>
+</body>
+</html>

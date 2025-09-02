@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture - Course Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="/assets/style.css" rel="stylesheet" />
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+  <script defer src="/assets/lecture.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <button id="menu-toggle" class="icon-btn hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="brand">Course Site</div>
+    <nav id="nav-links"></nav>
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+  </header>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <span>Menu</span>
+      <button id="sidebar-close" class="icon-btn" aria-label="Close menu">✕</button>
+    </div>
+    <nav id="sidebar-links"></nav>
+  </aside>
+  <div id="overlay" class="overlay"></div>
+
+  <main class="container">
+    <div id="lecture-navigation" class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <a href="#" id="back-to-course" style="text-decoration: none;">← Back to Course</a>
+        </div>
+        <div id="lecture-progress" style="display: flex; gap: 1rem; align-items: center;"></div>
+      </div>
+    </div>
+
+    <section id="lecture-head" class="card"></section>
+    
+    <div class="lecture-layout">
+      <section class="card main-content">
+        <div id="lecture-player"></div>
+        <div id="lecture-completion" class="completion-section"></div>
+      </section>
+      
+      <aside class="card sidebar-content">
+        <h3>Course Content</h3>
+        <div id="course-lectures" class="lecture-list"></div>
+      </aside>
+    </div>
+
+    <section class="card">
+      <h3>Resources</h3>
+      <div id="resources"></div>
+    </section>
+    
+    <section class="card">
+      <h3>Quiz</h3>
+      <div id="quiz">No quiz available for this lecture.</div>
+    </section>
+    
+    <section class="card">
+      <h3>Assignment</h3>
+      <div id="assignment">No assignment available for this lecture.</div>
+    </section>
+
+    <style>
+      .lecture-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+
+      @media (max-width: 768px) {
+        .lecture-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .main-content {
+        min-height: 400px;
+      }
+
+      .sidebar-content {
+        height: fit-content;
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .completion-section {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: var(--hover-bg);
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .lecture-item {
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-size: 0.9rem;
+      }
+
+      .lecture-item:hover {
+        background: var(--hover-bg);
+      }
+
+      .lecture-item.current {
+        background: rgba(33, 150, 243, 0.1);
+        border-left: 4px solid #2196F3;
+        font-weight: bold;
+      }
+
+      .lecture-item.completed {
+        background: rgba(76, 175, 80, 0.1);
+        color: var(--text-muted);
+      }
+
+      .lecture-item.locked {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .progress-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .progress-bar {
+        width: 200px;
+        height: 6px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: #4CAF50;
+        transition: width 0.3s ease;
+      }
+    </style>
+  </main>
+</body>
+</html>

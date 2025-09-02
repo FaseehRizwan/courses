@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Course - Course Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="/assets/style.css" rel="stylesheet" />
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+  <script defer src="/assets/course.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <button id="menu-toggle" class="icon-btn hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="brand">Course Site</div>
+    <nav id="nav-links"></nav>
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+  </header>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <span>Menu</span>
+      <button id="sidebar-close" class="icon-btn" aria-label="Close menu">✕</button>
+    </div>
+    <nav id="sidebar-links"></nav>
+  </aside>
+  <div id="overlay" class="overlay"></div>
+
+  <main class="container">
+    <div id="course-header" class="card"></div>
+    <div class="course-layout">
+      <section class="card main-content">
+        <div id="player"></div>
+        <div id="course-progress" class="progress-section"></div>
+      </section>
+      <aside class="card sidebar-content">
+        <h3>Course Content</h3>
+        <div id="lecture-list" class="lecture-list"></div>
+      </aside>
+    </div>
+
+    <style>
+      .course-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .course-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .main-content {
+        min-height: 400px;
+      }
+
+      .sidebar-content {
+        height: fit-content;
+      }
+
+      .sortable-container {
+        min-height: 100px;
+        position: relative;
+      }
+
+      .content-item {
+        margin-bottom: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .content-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .content-item[draggable="true"] {
+        cursor: move;
+      }
+
+      .content-item.dragging {
+        opacity: 0.5;
+        transform: rotate(2deg) scale(1.02);
+        z-index: 1000;
+      }
+
+      .content-item-inner {
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--card-bg);
+        transition: all 0.2s;
+      }
+
+      .content-item-inner:hover {
+        background: var(--hover-bg);
+      }
+
+      .content-item-inner.locked {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .content-item-inner.completed {
+        background: rgba(76, 175, 80, 0.1);
+        border-left: 4px solid #4CAF50;
+      }
+
+      .content-item-inner.current {
+        background: rgba(33, 150, 243, 0.1);
+        border-left: 4px solid #2196F3;
+      }
+
+      .drag-handle {
+        user-select: none;
+        font-weight: bold;
+        transition: color 0.2s;
+      }
+
+      .drag-handle:hover {
+        color: var(--primary) !important;
+        cursor: grab;
+      }
+
+      .drag-handle:active {
+        cursor: grabbing;
+      }
+
+      .drag-placeholder {
+        height: 4px;
+        background: var(--primary);
+        margin: 4px 0;
+        border-radius: 2px;
+        opacity: 0.7;
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 0.5rem;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: #4CAF50;
+        transition: width 0.3s ease;
+      }
+
+      .lock-icon {
+        color: var(--text-muted);
+        margin-left: auto;
+      }
+
+      .progress-section {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: var(--hover-bg);
+        border-radius: 8px;
+      }
+
+      #save-order-btn {
+        transition: all 0.3s ease;
+      }
+
+      #save-order-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </main>
+</body>
+</html>

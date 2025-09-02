@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Create Admin - Course Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="/assets/style.css" rel="stylesheet" />
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+  <script defer src="/assets/create-admin.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <button id="menu-toggle" class="icon-btn hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="brand">Course Site</div>
+    <nav id="nav-links"></nav>
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+  </header>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <span>Menu</span>
+      <button id="sidebar-close" class="icon-btn" aria-label="Close menu">✕</button>
+    </div>
+    <nav id="sidebar-links"></nav>
+  </aside>
+  <div id="overlay" class="overlay"></div>
+
+  <main class="container">
+    <h1>Create Admin</h1>
+    <p class="muted">Only admins can access this page.</p>
+    <form id="create-admin-form" class="card form">
+      <label>Name
+        <input type="text" name="name" required />
+      </label>
+      <label>Email
+        <input type="email" name="email" required />
+      </label>
+      <label>Password
+        <input type="password" name="password" required minlength="8" />
+      </label>
+      <button type="submit">Create Admin</button>
+      <div id="create-admin-error" class="error"></div>
+    </form>
+  </main>
+</body>
+</html>

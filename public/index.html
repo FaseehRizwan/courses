@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>EduLearn - Learn From The Best</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="/assets/edulearn.css" rel="stylesheet">
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="top-bar">
+      <div class="top-bar-container">
+        <div class="contact-info">
+          <span><i class="far fa-envelope"></i> info@edulearn.com</span>
+          <span><i class="fas fa-phone"></i> +1234 567 890</span>
+        </div>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.png" alt="EduLearn" id="placeholder-logo">
+        EduLearn
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/" class="active">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/courses">Courses</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-buttons" id="auth-buttons">
+        <a href="/login" class="login-btn">Login</a>
+        <a href="/register" class="register-btn">Register</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>WELCOME TO EDULEARN</h1>
+      <p>Discover a world of knowledge with our expert-led courses designed to help you achieve your goals and unlock your potential.</p>
+      <div class="hero-buttons">
+        <a href="/courses" class="btn-primary">Browse Courses</a>
+        <a href="/register" class="btn-secondary">Get Started</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>Why Choose Us</h2>
+        <p>We provide the best learning experience with our expert instructors and comprehensive courses</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-book-reader"></i>
+          </div>
+          <h3>Trending Courses</h3>
+          <p>Access to the latest and most in-demand courses across various industries.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-book"></i>
+          </div>
+          <h3>Books & Library</h3>
+          <p>Extensive digital library resources to supplement your learning journey.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <h3>Certified Teachers</h3>
+          <p>Learn from industry experts with proven track records and teaching excellence.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <h3>Certification</h3>
+          <p>Earn recognized certificates upon course completion to boost your career.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Courses -->
+  <section class="courses">
+    <div class="container">
+      <div class="section-title">
+        <h2>Popular Courses</h2>
+        <p>Explore our most sought-after courses loved by thousands of students worldwide</p>
+      </div>
+      <div class="course-grid" id="featured-courses">
+        <!-- Course cards will be populated dynamically -->
+        <div class="text-center">
+          <p>Loading courses...</p>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <a href="/courses" class="btn-primary">View All Courses</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3>1,200+</h3>
+          <p>Students</p>
+        </div>
+        <div class="stat-item">
+          <h3>120+</h3>
+          <p>Courses</p>
+        </div>
+        <div class="stat-item">
+          <h3>90+</h3>
+          <p>Teachers</p>
+        </div>
+        <div class="stat-item">
+          <h3>35+</h3>
+          <p>Countries</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial Section -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-title">
+        <h2>What Our Students Say</h2>
+        <p>Read what our students think about their learning experience with us</p>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>Taking courses on EduLearn changed my career trajectory. The quality of instruction and course materials was exceptional. I've gained skills that I use every day in my new job.</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-image">
+              <img src="https://i.pravatar.cc/100?img=1" alt="Student">
+            </div>
+            <div class="author-info">
+              <h4>Sarah Johnson</h4>
+              <p>Web Developer</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>The flexibility of learning on EduLearn platform allowed me to balance my studies with work. The instructors were responsive and the community support was amazing.</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-image">
+              <img src="https://i.pravatar.cc/100?img=2" alt="Student">
+            </div>
+            <div class="author-info">
+              <h4>Michael Brown</h4>
+              <p>Data Scientist</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>I've taken multiple courses here and each one has been worth every penny. The practical approach to teaching complex concepts makes learning enjoyable and effective.</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-image">
+              <img src="https://i.pravatar.cc/100?img=3" alt="Student">
+            </div>
+            <div class="author-info">
+              <h4>Lisa Rodriguez</h4>
+              <p>UX Designer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>About Us</h3>
+          <p>EduLearn is a leading online learning platform dedicated to providing high-quality education accessible to everyone. Our mission is to transform lives through learning.</p>
+          <div class="footer-social">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/courses">Courses</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/register">Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Useful Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <ul class="footer-links">
+            <li><i class="fas fa-map-marker-alt"></i> 123 Education St, Learning City</li>
+            <li><i class="fas fa-phone"></i> +1234 567 890</li>
+            <li><i class="fas fa-envelope"></i> info@edulearn.com</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 EduLearn. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Fetch featured courses for the homepage
+    document.addEventListener('DOMContentLoaded', async function() {
+      const featuredCoursesElement = document.getElementById('featured-courses');
+      try {
+        const response = await fetch('/api/public-courses');
+        const data = await response.json();
+        
+        if (data.courses && data.courses.length > 0) {
+          // Take only first 3 courses for featured section
+          const featuredCourses = data.courses.slice(0, 3);
+          
+          let coursesHTML = '';
+          featuredCourses.forEach(course => {
+            const price = course.is_free ? 
+              '<span class="course-price">Free</span>' : 
+              `<span class="course-price">PKR ${course.price}</span>`;
+              
+            coursesHTML += `
+              <div class="course-card">
+                <div class="course-image">
+                  ${course.thumbnail_url ? 
+                    `<img src="${course.thumbnail_url}" alt="${course.title}">` : 
+                    `<img src="/assets/course-placeholder.jpg" alt="${course.title}">`}
+                  ${price}
+                </div>
+                <div class="course-content">
+                  <span class="course-category">By ${course.teacher_name || 'Instructor'}</span>
+                  <h3 class="course-title">${course.title}</h3>
+                  <p>${course.description ? course.description.substring(0, 100) + '...' : 'No description available'}</p>
+                </div>
+                <div class="course-stats">
+                  <span><i class="fas fa-book"></i> ${course.lecture_count || 0} Lectures</span>
+                  <span><i class="fas fa-users"></i> ${course.projected_hours || 0} Hours</span>
+                </div>
+              </div>
+            `;
+          });
+          
+          featuredCoursesElement.innerHTML = coursesHTML;
+        } else {
+          featuredCoursesElement.innerHTML = '<p class="text-center">No courses available at the moment.</p>';
+        }
+      } catch (error) {
+        console.error('Failed to fetch courses:', error);
+        featuredCoursesElement.innerHTML = '<p class="text-center">Failed to load courses. Please try again later.</p>';
+      }
+      
+      // Update auth buttons based on login state
+      try {
+        const response = await fetch('/api/me');
+        const data = await response.json();
+        const authButtonsContainer = document.getElementById('auth-buttons');
+        
+        if (data.user) {
+          authButtonsContainer.innerHTML = `
+            <a href="/dashboard" class="login-btn">Dashboard</a>
+            <button onclick="logout()" class="register-btn">Logout</button>
+          `;
+        }
+      } catch (error) {
+        console.error('Failed to check auth state:', error);
+      }
+    });
+
+    // Check if logo exists, otherwise use a generic one
+    document.addEventListener('DOMContentLoaded', function() {
+      const logo = document.getElementById('placeholder-logo');
+      logo.onerror = function() {
+        // If logo fails to load, use text instead
+        logo.style.display = 'none';
+      };
+    });
+  </script>
+</body>
+</html>

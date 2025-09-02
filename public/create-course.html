@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Create Course - Course Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="/assets/style.css" rel="stylesheet" />
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+  <script defer src="/assets/create-course.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <button id="menu-toggle" class="icon-btn hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="brand">Course Site</div>
+    <nav id="nav-links"></nav>
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+  </header>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <span>Menu</span>
+      <button id="sidebar-close" class="icon-btn" aria-label="Close menu">✕</button>
+    </div>
+    <nav id="sidebar-links"></nav>
+  </aside>
+  <div id="overlay" class="overlay"></div>
+
+  <main class="container">
+    <h1>Course Management</h1>
+    <p class="muted">Create and manage your courses</p>
+
+    <!-- Prominent Add New Course Button -->
+    <div class="course-creation-section">
+      <button id="add-new-course-btn" class="btn-primary btn-large">
+        <span class="icon">+</span>
+        Add New Course
+      </button>
+    </div>
+
+    <!-- Course Creation Modal -->
+    <div id="course-creation-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Create New Course</h2>
+        <form id="create-course-form" class="form">
+          <label>Course Title *
+            <input type="text" name="title" required placeholder="Enter course title" />
+          </label>
+          <label>Description
+            <textarea name="description" rows="3" placeholder="Course description"></textarea>
+          </label>
+          <label>Estimated Project Hours
+            <input type="number" name="projected_hours" min="0" step="0.5" placeholder="e.g. 12" />
+          </label>
+          <label>Number of Lectures (planned)
+            <input type="number" name="total_lectures" min="1" placeholder="e.g. 10" />
+          </label>
+          
+          <!-- Pricing Section -->
+          <div class="pricing-section">
+            <h3>Course Pricing</h3>
+            
+            <label class="checkbox-label">
+              <input type="checkbox" name="is_free" checked onchange="togglePricing(this)" />
+              This is a free course
+            </label>
+            
+            <div id="pricing-fields" class="pricing-fields hidden">
+              <label>Course Price (PKR) *
+                <input type="number" name="price" min="0" step="1" placeholder="e.g. 5000" />
+              </label>
+              
+              <label>Payment Type *
+                <select name="payment_type" onchange="toggleMonthField(this)">
+                  <option value="one_time">One-time Payment</option>
+                  <option value="monthly">Monthly Payment</option>
+                </select>
+              </label>
+              
+              <div id="monthly-field" class="hidden">
+                <label>Payment Month *
+                  <select name="monthly_payment_month">
+                    <option value="">Select Month</option>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" id="cancel-course-btn" class="btn-secondary">Cancel</button>
+            <button type="submit" class="btn-primary">Create Course</button>
+          </div>
+          <div id="create-course-error" class="error"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- List Courses Section -->
+    <section class="courses-section">
+      <h2>Your Courses</h2>
+      <div id="courses-grid" class="courses-grid"></div>
+    </section>
+
+    <!-- Lecture/Quiz/Assignment Management Modal -->
+    <div id="manage-modal" class="modal hidden">
+      <div class="modal-content" id="manage-modal-content"></div>
+    </div>
+  </main>
+
+  <style>
+    .course-creation-section {
+      text-align: center;
+      margin: 2rem 0;
+      padding: 2rem;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 2px dashed var(--border);
+    }
+
+    .btn-large {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-large .icon {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      min-width: 400px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .course-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .course-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .course-card::before {
+      content: "Click to manage course";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--primary);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .course-card:hover::before {
+      opacity: 1;
+    }
+
+    .course-thumbnail {
+      width: 100%;
+      height: 160px;
+      background: var(--muted);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .course-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .course-actions button {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .pricing-section {
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .pricing-section h3 {
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .pricing-fields {
+      margin-top: 1rem;
+    }
+
+    .pricing-fields.hidden {
+      display: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .currency-note {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+  </style>
+
+  <script>
+    function togglePricing(checkbox) {
+      const pricingFields = document.getElementById('pricing-fields');
+      if (checkbox.checked) {
+        pricingFields.classList.add('hidden');
+      } else {
+        pricingFields.classList.remove('hidden');
+      }
+    }
+
+    function toggleMonthField(select) {
+      const monthField = document.getElementById('monthly-field');
+      if (select.value === 'monthly') {
+        monthField.classList.remove('hidden');
+      } else {
+        monthField.classList.add('hidden');
+      }
+    }
+  </script>
+</body>
+</html>

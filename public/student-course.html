@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Course - EduLearn</title>
+  <link rel="stylesheet" href="/assets/edulearn.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="top-bar">
+      <div class="top-bar-container">
+        <div class="contact-info">
+          <span><i class="fas fa-phone-alt"></i> +1 234 567 890</span>
+          <span><i class="fas fa-envelope"></i> support@edulearn.com</span>
+        </div>
+        <div class="header-buttons">
+          <a href="/login" class="btn-primary">Login</a>
+          <a href="/register" class="btn-secondary">Register</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.png" alt="EduLearn Logo" id="placeholder-logo">
+        EduLearn
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/courses">Courses</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="breadcrumbs">
+      <div class="breadcrumbs-container">
+        <div class="breadcrumbs-list">
+          <div class="breadcrumbs-item">
+            <a href="/">Home</a>
+          </div>
+          <div class="breadcrumbs-item">
+            <a href="/courses">Courses</a>
+          </div>
+          <div class="breadcrumbs-item active" id="breadcrumb-course">
+            Course Title
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-header">
+      <h1 id="header-course-title">Course Title</h1>
+      <div class="course-meta">
+        <span id="course-instructor">Instructor Name</span> |
+        <span id="course-lectures">0 Lectures</span> |
+        <span id="course-hours">0 Hours</span>
+      </div>
+    </div>
+
+    <div class="course-content-wrapper">
+      <div class="course-content">
+        <div class="content-section">
+          <h3>Lecture: Introduction to HTML</h3>
+          <div id="lecture-video">
+            <!-- Video player will be embedded here -->
+            <p>Video URL: <a href="https://www.example.com/video-url" target="_blank">Watch Video</a></p>
+          </div>
+        </div>
+        
+        <div class="content-section">
+          <h3>Notes</h3>
+          <div id="lecture-notes">
+            <p>HTML stands for HyperText Markup Language. It is the standard markup language for creating Web pages.</p>
+            <ul>
+              <li>HTML describes the structure of a Web page</li>
+              <li>HTML consists of a series of elements</li>
+              <li>HTML elements tell the browser how to display the content</li>
+              <li>HTML elements label pieces of content such as "this is a heading", "this is a paragraph", "this is a link", etc.</li>
+            </ul>
+            <h4>Key Topics Covered:</h4>
+            <ol>
+              <li>HTML Document Structure</li>
+              <li>Basic HTML Tags</li>
+              <li>Attributes and Values</li>
+              <li>Creating Your First Web Page</li>
+            </ol>
+          </div>
+        </div>
+        
+        <div class="content-section">
+          <h3>Quiz</h3>
+          <div id="lecture-quiz">
+            <div class="quiz-preview">
+              <h4>HTML Basics Quiz</h4>
+              <p>Test your understanding of HTML fundamentals with this 5-question quiz.</p>
+              <button class="btn-primary">Take Quiz</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="next-prev-navigation">
+          <button class="btn-secondary" id="prev-lecture">
+            <i class="fas fa-chevron-left"></i> Previous Lecture
+          </button>
+          <button class="btn-primary" id="next-lecture">
+            Next Lecture <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="course-sidebar">
+        <div class="sidebar-header">
+          <h3>Course Content</h3>
+        </div>
+        <ul class="course-content-list" id="course-content">
+          <li class="content-item active">
+            <a href="#lecture-1">
+              <i class="fas fa-play-circle"></i> Introduction to HTML
+              <span class="lecture-duration">15 min</span>
+            </a>
+          </li>
+          <li class="content-item completed">
+            <a href="#lecture-2">
+              <i class="fas fa-play-circle"></i> HTML Document Structure
+              <span class="lecture-duration">20 min</span>
+            </a>
+          </li>
+          <li class="content-item">
+            <a href="#lecture-3">
+              <i class="fas fa-play-circle"></i> Working with Text
+              <span class="lecture-duration">18 min</span>
+            </a>
+          </li>
+          <li class="content-item locked">
+            <a href="#lecture-4">
+              <i class="fas fa-play-circle"></i> Links and Images
+              <span class="lecture-duration">22 min</span>
+            </a>
+          </li>
+          <li class="content-item locked">
+            <a href="#lecture-5">
+              <i class="fas fa-play-circle"></i> Forms and Input
+              <span class="lecture-duration">25 min</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Student Portal</h3>
+          <p>EduLearn Student Portal provides easy access to your courses, assignments, quizzes, and academic resources.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/student/dashboard">Dashboard</a></li>
+            <li><a href="/courses">Browse Courses</a></li>
+            <li><a href="/student/calendar">Calendar</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Support</h3>
+          <ul class="footer-links">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Contact Support</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 EduLearn Student Portal. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Get course ID from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const courseId = urlParams.get('id');
+      
+      if (!courseId) {
+        alert('Course not found');
+        window.location.href = '/student/dashboard';
+        return;
+      }
+      
+      try {
+        // Load course data
+        const response = await api(`/api/courses/${courseId}`, { method: 'GET' });
+        
+        if (response.course) {
+          const course = response.course;
+          document.getElementById('course-title').textContent = course.title;
+          document.getElementById('breadcrumb-course').textContent = course.title;
+          document.getElementById('header-course-title').textContent = course.title;
+          document.getElementById('course-instructor').textContent = course.teacher_name;
+          document.getElementById('course-lectures').textContent = `${course.lecture_count || 0} Lectures`;
+          document.getElementById('course-hours').textContent = `${course.projected_hours || 0} Hours`;
+          
+          // Load course content (lectures)
+          if (response.lectures && response.lectures.length > 0) {
+            const contentList = document.getElementById('course-content');
+            contentList.innerHTML = response.lectures.map((lecture, index) => `
+              <li class="content-item ${index === 0 ? 'active' : ''}">
+                <a href="/student/lecture?id=${lecture.id}">
+                  <i class="fas fa-play-circle"></i> ${lecture.title}
+                  <span class="lecture-duration">${lecture.projected_time || '-- min'}</span>
+                </a>
+              </li>
+            `).join('');
+            
+            // Load first lecture content
+            if (response.lectures[0]) {
+              const firstLecture = response.lectures[0];
+              document.getElementById('lecture-video').innerHTML = firstLecture.video_url ? 
+                `<p>Video URL: <a href="${firstLecture.video_url}" target="_blank">Watch Video</a></p>` :
+                '<p>No video available for this lecture.</p>';
+            }
+          } else {
+            document.getElementById('course-content').innerHTML = `
+              <li class="content-item">
+                <span>No lectures available yet</span>
+              </li>
+            `;
+          }
+        } else {
+          alert('Course not found or access denied');
+          window.location.href = '/student/dashboard';
+        }
+      } catch (error) {
+        console.error('Failed to load course:', error);
+        alert('Failed to load course: ' + error.message);
+        window.location.href = '/student/dashboard';
+      }
+      
+      // Check if logo exists
+      const logo = document.getElementById('placeholder-logo');
+      logo.onerror = function() {
+        logo.style.display = 'none';
+      };
+      
+      // Navigation handlers
+      document.getElementById('next-lecture').addEventListener('click', function() {
+        alert('Navigation to next lecture coming soon!');
+      });
+      
+      document.getElementById('prev-lecture').addEventListener('click', function() {
+        alert('Navigation to previous lecture coming soon!');
+      });
+    });
+  </script>
+</body>
+</html>

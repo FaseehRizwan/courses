@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Courses - EduLearn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="/assets/edulearn.css" rel="stylesheet">
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+  <script defer src="/assets/centralized-courses.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="top-bar">
+      <div class="top-bar-container">
+        <div class="contact-info">
+          <span><i class="far fa-envelope"></i> info@edulearn.com</span>
+          <span><i class="fas fa-phone"></i> +1234 567 890</span>
+        </div>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.png" alt="EduLearn" id="placeholder-logo">
+        EduLearn
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/courses" class="active">Courses</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-buttons" id="auth-buttons">
+        <a href="/login" class="login-btn">Login</a>
+        <a href="/register" class="register-btn">Register</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs -->
+  <div class="breadcrumbs">
+    <div class="breadcrumbs-container">
+      <h2 class="page-title">All Courses</h2>
+      <ul class="breadcrumbs-list">
+        <li class="breadcrumbs-item"><a href="/">Home</a></li>
+        <li class="breadcrumbs-item active">All Courses</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Courses Section -->
+  <section class="courses" style="background-color: var(--bg-light);">
+    <div class="container">
+      <div class="catalog-layout">
+        <div class="filter-sidebar">
+          <h3>Course Filters</h3>
+          
+          <div class="filter-group">
+            <h3>Search</h3>
+            <input type="text" id="search-courses" class="course-search" placeholder="Search courses...">
+          </div>
+          
+          <div class="filter-group">
+            <h3>Teachers</h3>
+            <div class="filter-options">
+              <select id="filter-teacher" class="form-control">
+                <option value="">All Teachers</option>
+                <!-- Will be populated by JavaScript -->
+              </select>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <h3>Price</h3>
+            <div class="filter-options">
+              <div class="filter-option">
+                <input type="checkbox" id="price-free" checked>
+                <label for="price-free">Free Courses</label>
+              </div>
+              <div class="filter-option">
+                <input type="checkbox" id="price-paid" checked>
+                <label for="price-paid">Paid Courses</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <h3>Course Features</h3>
+            <div class="filter-options">
+              <div class="filter-option">
+                <input type="checkbox" id="feature-lectures" checked>
+                <label for="feature-lectures">With Lectures</label>
+              </div>
+              <div class="filter-option">
+                <input type="checkbox" id="feature-assignments" checked>
+                <label for="feature-assignments">With Assignments</label>
+              </div>
+              <div class="filter-option">
+                <input type="checkbox" id="feature-quizzes" checked>
+                <label for="feature-quizzes">With Quizzes</label>
+              </div>
+            </div>
+          </div>
+          
+          <button id="clear-filters" class="btn-secondary full-width mt-4">Clear Filters</button>
+        </div>
+
+        <div class="courses-content">
+          <div class="section-title">
+            <h2>Discover Our Courses</h2>
+            <p>Browse our wide range of courses designed to help you achieve your goals</p>
+          </div>
+          
+          <div id="courses-grid" class="course-grid">
+            <!-- Courses will be loaded here by JavaScript -->
+            <div class="text-center">
+              <p>Loading courses...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>About Us</h3>
+          <p>EduLearn is a leading online learning platform dedicated to providing high-quality education accessible to everyone. Our mission is to transform lives through learning.</p>
+          <div class="footer-social">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/courses">Courses</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/register">Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Useful Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <ul class="footer-links">
+            <li><i class="fas fa-map-marker-alt"></i> 123 Education St, Learning City</li>
+            <li><i class="fas fa-phone"></i> +1234 567 890</li>
+            <li><i class="fas fa-envelope"></i> info@edulearn.com</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 EduLearn. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

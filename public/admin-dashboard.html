@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - EduLearn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="/assets/edulearn.css" rel="stylesheet">
+  <link href="/assets/style.css" rel="stylesheet">
+  <script defer src="/assets/app.js"></script>
+  <script defer src="/assets/main.js"></script>
+  <script defer src="/assets/admin-dashboard.js"></script>
+  <style>
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    
+    .stat-card h3 {
+      font-size: 36px;
+      margin: 10px 0;
+      color: var(--primary);
+    }
+    
+    .stat-card p {
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    .admin-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .admin-card h2 {
+      margin-top: 0;
+      color: var(--secondary);
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .user-table, .course-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .user-table th, .user-table td,
+    .course-table th, .course-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .user-table th, .course-table th {
+      background: var(--bg-light);
+      color: var(--secondary);
+      font-weight: 600;
+    }
+    
+    .user-table tr:hover, .course-table tr:hover {
+      background: var(--bg-light);
+    }
+    
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .btn-view {
+      background: var(--info);
+      color: white;
+    }
+    
+    .btn-edit {
+      background: var(--warning);
+      color: var(--text-dark);
+    }
+    
+    .btn-delete {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .dashboard-actions {
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    @media (max-width: 992px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="top-bar">
+      <div class="top-bar-container">
+        <div class="contact-info">
+          <span><i class="far fa-envelope"></i> admin@edulearn.com</span>
+          <span><i class="fas fa-phone"></i> +1234 567 890</span>
+        </div>
+        <div class="social-links">
+          <a href="#"><i class="fas fa-bell"></i></a>
+          <a href="#"><i class="fas fa-cog"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.png" alt="EduLearn" id="placeholder-logo">
+        EduLearn <span style="font-size: 16px; opacity: 0.8;">Admin</span>
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/admin/dashboard" class="active">Dashboard</a></li>
+          <li><a href="/admin/create-teacher">Create Teacher</a></li>
+          <li><a href="/courses">View Courses</a></li>
+        </ul>
+      </nav>
+      <div class="header-buttons">
+        <button onclick="logout()" class="register-btn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs -->
+  <div class="breadcrumbs">
+    <div class="breadcrumbs-container">
+      <h2 class="page-title">Admin Dashboard</h2>
+      <ul class="breadcrumbs-list">
+        <li class="breadcrumbs-item"><a href="/">Home</a></li>
+        <li class="breadcrumbs-item active">Admin Dashboard</li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="stats-cards">
+      <div class="stat-card">
+        <i class="fas fa-users fa-2x" style="color: var(--primary);"></i>
+        <h3 id="student-count">--</h3>
+        <p>Students</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-chalkboard-teacher fa-2x" style="color: var(--primary);"></i>
+        <h3 id="teacher-count">--</h3>
+        <p>Teachers</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-book fa-2x" style="color: var(--primary);"></i>
+        <h3 id="course-count">--</h3>
+        <p>Courses</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-video fa-2x" style="color: var(--primary);"></i>
+        <h3 id="lecture-count">--</h3>
+        <p>Lectures</p>
+      </div>
+    </div>
+    
+    <div class="dashboard-container">
+      <div class="sidebar-content">
+        <div class="admin-card">
+          <h2><i class="fas fa-users"></i> Recent Users</h2>
+          <div id="recent-users">
+            <p class="text-center">Loading recent users...</p>
+          </div>
+        </div>
+        
+        <div class="admin-card">
+          <h2><i class="fas fa-chart-line"></i> System Stats</h2>
+          <ul>
+            <li>Server Uptime: <span id="uptime">--</span></li>
+            <li>Total Storage: <span id="storage">--</span></li>
+            <li>Database Size: <span id="db-size">--</span></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="main-content">
+        <div class="admin-card">
+          <h2><i class="fas fa-book"></i> Recent Courses</h2>
+          <div id="recent-courses">
+            <p class="text-center">Loading recent courses...</p>
+          </div>
+        </div>
+        
+        <div class="admin-card">
+          <h2><i class="fas fa-tasks"></i> Quick Actions</h2>
+          <div class="dashboard-actions">
+            <a href="/admin/create-teacher" class="btn-primary"><i class="fas fa-plus"></i> Add Teacher</a>
+            <a href="/courses" class="btn-primary"><i class="fas fa-eye"></i> View Courses</a>
+            <button id="run-backup" class="btn-primary"><i class="fas fa-database"></i> Backup Database</button>
+            <button id="clear-cache" class="btn-primary"><i class="fas fa-broom"></i> Clear Cache</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Admin Portal</h3>
+          <p>EduLearn Admin Portal provides powerful tools to manage your learning platform, users, courses, and content.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/create-teacher">Create Teacher</a></li>
+            <li><a href="/courses">View Courses</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Support</h3>
+          <ul class="footer-links">
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">System Status</a></li>
+            <li><a href="#">Release Notes</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 EduLearn Admin Portal. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        // Load real dashboard stats
+        const statsResponse = await api('/api/admin/stats', { method: 'GET' });
+        if (statsResponse) {
+          document.getElementById('student-count').textContent = statsResponse.students.toLocaleString();
+          document.getElementById('teacher-count').textContent = statsResponse.teachers.toLocaleString();
+          document.getElementById('course-count').textContent = statsResponse.courses.toLocaleString();
+          document.getElementById('lecture-count').textContent = statsResponse.lectures.toLocaleString();
+        }
+        
+        // Load recent users
+        const usersResponse = await api('/api/admin/recent-users', { method: 'GET' });
+        if (usersResponse && usersResponse.users) {
+          const recentUsersTable = usersResponse.users.map(user => `
+            <tr>
+              <td>${user.name}</td>
+              <td>${user.email}</td>
+              <td><span class="badge badge-${user.role}">${user.role}</span></td>
+              <td>${new Date(user.created_at).toLocaleDateString()}</td>
+            </tr>
+          `).join('');
+          
+          document.getElementById('recent-users').innerHTML = `
+            <table class="user-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recentUsersTable}
+              </tbody>
+            </table>
+          `;
+        }
+        
+        // Load recent courses
+        const coursesResponse = await api('/api/my-courses', { method: 'GET' });
+        if (coursesResponse && coursesResponse.courses) {
+          const recentCoursesTable = coursesResponse.courses.slice(0, 5).map(course => `
+            <tr>
+              <td>${course.title}</td>
+              <td>${course.teacher_name}</td>
+              <td>--</td>
+              <td>
+                <a href="/course?id=${course.id}" class="action-btn btn-view">View</a>
+              </td>
+            </tr>
+          `).join('');
+          
+          document.getElementById('recent-courses').innerHTML = `
+            <table class="course-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Teacher</th>
+                  <th>Students</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recentCoursesTable || '<tr><td colspan="4">No courses available</td></tr>'}
+              </tbody>
+            </table>
+          `;
+        }
+        
+        // System stats (placeholder for now)
+        document.getElementById('uptime').textContent = 'Loading...';
+        document.getElementById('storage').textContent = 'Loading...';
+        document.getElementById('db-size').textContent = 'Loading...';
+        
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+        document.getElementById('recent-users').innerHTML = '<p class="text-center">Error loading users</p>';
+        document.getElementById('recent-courses').innerHTML = '<p class="text-center">Error loading courses</p>';
+      }
+      
+      // Check if logo exists
+      const logo = document.getElementById('placeholder-logo');
+      logo.onerror = function() {
+        logo.style.display = 'none';
+      };
+      
+      // Set up action buttons
+      document.getElementById('run-backup').addEventListener('click', function() {
+        alert('Database backup feature not implemented yet.');
+      });
+      
+      document.getElementById('clear-cache').addEventListener('click', function() {
+        alert('Cache clearing feature not implemented yet.');
+      });
+    });
+  </script>
+</body>
+</html>
+        `;
+      }, 500);
+      
+      // Check if logo exists, otherwise use a generic one
+      const logo = document.getElementById('placeholder-logo');
+      logo.onerror = function() {
+        // If logo fails to load, use text instead
+        logo.style.display = 'none';
+      };
+      
+      // Set up action buttons
+      document.getElementById('run-backup').addEventListener('click', function() {
+        alert('Database backup initiated. You will be notified when complete.');
+      });
+      
+      document.getElementById('clear-cache').addEventListener('click', function() {
+        alert('Cache cleared successfully!');
+      });
+    });
+  </script>
+</body>
+</html>
